@@ -1,6 +1,7 @@
 "use client"
 import React, { useState, useEffect } from 'react';
 import { Home, Wheat, Cloud, AlertTriangle, ScanLine, User, LogIn, Menu, X } from 'lucide-react';
+import Image from 'next/image';
 
 export const Navbar = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -44,14 +45,9 @@ export const Navbar = () => {
           <div className="flex-shrink-0 group cursor-pointer">
             <div className="flex items-center space-x-2">
               <div className="relative">
-                <div className="absolute inset-0 bg-emerald-400 rounded-full blur-md opacity-50 group-hover:opacity-75 transition-opacity"></div>
-                <div className="relative bg-gradient-to-br from-emerald-500 to-emerald-600 p-2 rounded-full">
-                  <Wheat className="h-6 w-6 text-white" />
-                </div>
+                <Image src="/images/logo.png" alt="Logo" width={80} height={80} />
               </div>
-              <span className="text-xl font-bold bg-gradient-to-r from-emerald-600 to-emerald-700 bg-clip-text text-transparent font-tiro">
-                গোলাঘর
-              </span>
+              
             </div>
           </div>
 

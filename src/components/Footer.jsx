@@ -18,9 +18,6 @@ export default function Footer() {
   return (
     <footer className="bg-slate-900 text-slate-200 font-sans border-t border-slate-800">
       
-      {/* Top Wave Decoration (Optional visual separator) */}
-      <div className="w-full h-1 bg-gradient-to-r from-emerald-500 via-amber-500 to-emerald-600"></div>
-
       <div className="container mx-auto px-4 pt-16 pb-8">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
           

@@ -41,7 +41,9 @@ export default function RootLayout({ children }) {
         <Navbar />
 
         <ToastContainer />
-        {children}
+        <div className="min-h-screen flex flex-col">
+          {children}
+        </div>
         <Footer />
       </body>
     </html>

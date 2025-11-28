@@ -157,7 +157,7 @@ export default function RiskDashboard() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br my-12 from-blue-50 to-emerald-50 py-8">
-      <div className="max-w-6xl mx-auto px-4 space-y-8">
+      <div className="max-w-7xl mx-auto px-4 space-y-8">
         
         {/* হেডার */}
         <div className="text-center">

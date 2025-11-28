@@ -50,12 +50,7 @@ export default function VideoPlay() {
           স্মার্ট স্টোরেজ এবং আবহাওয়ার পূর্বাভাস এখন আপনার হাতের মুঠোয়।
         </p>
 
-        {/* Buttons - Removed Video option, resized Start button */}
-        <div className="animate-in fade-in duration-1000 delay-300">
-           <button className="group backdrop-blur-md bg-white/10 border border-white/30 text-white px-8 py-4 rounded-full font-bold text-lg hover:bg-white hover:text-emerald-900 transition-all flex items-center gap-2">
-            শুরু করুন
-          </button>
-        </div>
+     
         
       </div>
 

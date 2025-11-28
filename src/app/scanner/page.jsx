@@ -127,7 +127,7 @@ export default function CropScanner() {
   const confidence = result ? (result.score * 100).toFixed(1) : 0;
 
   return (
-    <div className="min-h-screen bg-slate-50 font-sans p-4 flex items-center justify-center">
+    <div className="min-h-screen bg-slate-50 font-sans p-4 mt-12 flex items-center justify-center">
       <div className="w-full max-w-md">
         
         {/* হেডার */}

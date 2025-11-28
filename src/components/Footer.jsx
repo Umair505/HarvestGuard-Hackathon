@@ -18,14 +18,13 @@ export default function Footer() {
   return (
     <footer className="bg-slate-900 text-slate-200 font-sans border-t border-slate-800">
       
-      <div className="container mx-auto px-4 pt-16 pb-8">
+      <div className="max-w-11/12 mx-auto px-4 pt-16 pb-8">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
           
           {/* Column 1: Brand & Mission */}
           <div className="space-y-6">
             <Link href="/" className="flex items-center gap-2 group">
-             <Image src="/images/logo.png" alt="গোলাঘর" width={40} height={40} />
-              <span className="text-2xl font-bold font-tiro-bangla text-white">গোলাঘর</span>
+              <Image src="/images/logo.png" alt="Logo" width={80} height={80} />
             </Link>
             <p className="text-slate-400 text-sm leading-relaxed">
               প্রযুক্তির ছোঁয়ায় বাচুক কৃষকের স্বপ্ন। আমরা কাজ করছি বাংলাদেশের খাদ্য অপচয় রোধে এবং কৃষকদের জীবনমান উন্নয়নে।

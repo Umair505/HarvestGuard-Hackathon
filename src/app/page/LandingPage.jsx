@@ -9,6 +9,7 @@ import { Shield, AlertTriangle, CheckCircle, CloudRain, Warehouse, Camera } from
 import ProblemSection from '@/components/ui/ProblemSection';
 import SolutionFlowSection from '@/components/ui/SolutionFlowSection';
 import FeaturesSection from '@/components/ui/FeaturesSection';
+import VideoPlay from '@/components/ui/VideoPlay';
 
 export default function LandingPage() {
   return (
@@ -18,6 +19,7 @@ export default function LandingPage() {
       
       {/* Solution Flow Section */}
       <SolutionFlowSection />
+       <VideoPlay/>
       
       {/* Features Section */}
       <FeaturesSection />

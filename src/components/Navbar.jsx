@@ -27,6 +27,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
+import Link from "next/link";
 
 export const Navbar = () => {
   const { data: session, status } = useSession();
@@ -79,7 +80,7 @@ export const Navbar = () => {
     { label: "হোম", href: "/", icon: Home },
     { label: "ফসল", href: "/crops", icon: Wheat },
     { label: "আবহাওয়া", href: "/weather", icon: Cloud },
-    { label: "ঝুঁকি", href: "/risk", icon: AlertTriangle },
+    { label: "ঝুঁকি", href: "/risk-dashboard", icon: AlertTriangle },
     { label: "স্ক্যান", href: "/scanner", icon: ScanLine },
   ];
 
@@ -97,7 +98,8 @@ export const Navbar = () => {
           <div className="flex-shrink-0 group cursor-pointer">
             <div className="flex items-center space-x-2">
               <div className="relative">
-                <Image src="/images/logo.png" alt="Logo" width={80} height={80} />
+               
+                 <Link href="/"> <Image src="/images/logo.png" alt="Logo" width={80} height={80} /></Link>
               </div>
             </div>
           </div>
@@ -129,7 +131,7 @@ export const Navbar = () => {
             {/* Crop Batch Registration — ONLY VISIBLE IF LOGGED IN */}
             {isLoggedIn && (
               <a
-                href="/batch-registration"
+                href="/batchregistration"
                 className="px-4 py-2 bg-emerald-600 text-white rounded-lg shadow-md hover:bg-emerald-700 transition-all"
                 style={{
                   animation: "slideDown 0.5s ease-out 0.45s both",

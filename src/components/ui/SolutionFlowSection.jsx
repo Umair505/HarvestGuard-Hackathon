@@ -72,7 +72,7 @@ export default function SolutionFlowSection() {
   };
 
   return (
-    <section ref={ref} className="relative py-24 overflow-hidden bg-emerald-50/30 font-sans">
+    <section ref={ref} className="relative  py-24 overflow-hidden bg-emerald-50/30 font-sans">
       
       {/* ব্যাকগ্রাউন্ড ডেকোরেশন */}
       <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
@@ -82,7 +82,7 @@ export default function SolutionFlowSection() {
          <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20"></div>
       </div>
 
-      <div className="container mx-auto px-4 relative z-10">
+      <div className="max-w-11/12 mx-auto px-4 relative z-10">
         
         {/* সেকশন হেডার */}
         <div className="text-center max-w-3xl mx-auto mb-20">

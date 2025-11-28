@@ -2,10 +2,11 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { Navbar } from "@/components/Navbar";
 import { ToastContainer } from "react-toastify";
-import { Hind_Siliguri, Tiro_Bangla } from 'next/font/google'
+import { Hind_Siliguri, Tiro_Bangla } from "next/font/google";
 import Footer from "@/components/Footer";
 import NextAuthProvider from "./Providers/NextAuthProvider";
 import { Toaster } from "sonner";
+import ScrollToTopAdvanced from "@/components/ScrollToTopAdvanced";
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -22,17 +23,16 @@ export const metadata = {
 };
 // ফন্ট কনফিগারেশন
 const hindSiliguri = Hind_Siliguri({
-  subsets: ['bengali'],
-  weight: ['300', '400', '500', '600', '700'],
-  variable: '--font-hind',
-})
+  subsets: ["bengali"],
+  weight: ["300", "400", "500", "600", "700"],
+  variable: "--font-hind",
+});
 
 const tiroBangla = Tiro_Bangla({
-  subsets: ['bengali'],
-  weight: ['400'], 
-  variable: '--font-tiro',
-})
-
+  subsets: ["bengali"],
+  weight: ["400"],
+  variable: "--font-tiro",
+});
 
 export default function RootLayout({ children }) {
   return (
@@ -40,16 +40,13 @@ export default function RootLayout({ children }) {
       <body
         className={`${hindSiliguri.variable} ${tiroBangla.variable} ${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-         <NextAuthProvider>
-         
-        <Navbar />
-
-        <ToastContainer />
-        <Toaster position="top-right" richColors />
-        <div className="min-h-screen flex flex-col">
-          {children}
-        </div>
-        <Footer />
+        <NextAuthProvider>
+          <Navbar />
+          <ScrollToTopAdvanced />
+          <ToastContainer />
+          <Toaster position="top-right" richColors />
+          <div className="min-h-screen flex flex-col">{children}</div>
+          <Footer />
         </NextAuthProvider>
       </body>
     </html>

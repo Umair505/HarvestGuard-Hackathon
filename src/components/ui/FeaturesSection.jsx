@@ -90,7 +90,7 @@ const Notification = ({ name, description, icon, color, time }) => {
 // --- ৩. মেইন সেকশন ---
 export default function FeaturesSection() {
   return (
-    <section className="py-24 overflow-hidden font-hind relative">
+    <section className="py-24 max-w-11/12 mx-auto overflow-hidden font-hind relative">
       
      
 

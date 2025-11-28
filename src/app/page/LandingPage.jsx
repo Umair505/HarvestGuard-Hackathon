@@ -10,6 +10,7 @@ import ProblemSection from '@/components/ui/ProblemSection';
 import SolutionFlowSection from '@/components/ui/SolutionFlowSection';
 import FeaturesSection from '@/components/ui/FeaturesSection';
 import VideoPlay from '@/components/ui/VideoPlay';
+import NetworkVisualization from '@/components/NetworkVisualization';
 
 export default function LandingPage() {
   return (
@@ -23,6 +24,7 @@ export default function LandingPage() {
       
       {/* Features Section */}
       <FeaturesSection />
+      <NetworkVisualization />
     </div>
   );
 }

@@ -20,16 +20,15 @@ export const authOptions = {
 
         if (!user) return null;
 
-        // bcrypt.compare(plainPassword, hashedPassword)
         const isPasswordOK = await bcrypt.compare(credentials.password, user.password);
         if (!isPasswordOK) return null;
 
-        // return a safe user object (NextAuth will store into JWT)
         return {
           id: user._id.toString(),
           name: user.name || user.email,
           email: user.email,
           image: user.image || null,
+          photoURL: user.image || null, // Add this for consistency
         };
       },
     }),
@@ -37,23 +36,26 @@ export const authOptions = {
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID || "",
       clientSecret: process.env.GOOGLE_CLIENT_SECRET || "",
+      authorization: {
+        params: {
+          prompt: "select_account", // Force account selection
+        },
+      },
     }),
   ],
 
   pages: {
-    signIn: "/login", // your login route
+    signIn: "/login",
   },
 
   callbacks: {
-    async signIn({ user, account, profile, email, credentials }) {
-      // if signing in via OAuth (Google), ensure user saved in DB
+    async signIn({ user, account, profile }) {
       if (account?.provider && account.provider !== "credentials") {
         try {
           const userCollection = connectToDatabase(collectionNamesObj.userCollection);
           const providerAccountId = account.providerAccountId || profile.sub || profile.id;
           const provider = account.provider;
 
-          // Look for existing provider identity
           const existing = await userCollection.findOne({ providerAccountId, provider });
 
           if (!existing) {
@@ -63,7 +65,6 @@ export const authOptions = {
               email: user.email,
               image: user.image || profile.picture || null,
               name: user.name || profile.name || user.email,
-              // you can add createdAt
               createdAt: new Date(),
             };
             await userCollection.insertOne(payload);
@@ -76,19 +77,30 @@ export const authOptions = {
     },
 
     async jwt({ token, user }) {
-      // On initial sign in, user object is available
       if (user) {
         token.id = user.id || token.sub;
+        token.name = user.name;
+        token.email = user.email;
+        token.image = user.image;
+        token.photoURL = user.image; // Add this
       }
       return token;
     },
 
     async session({ session, token }) {
-      if (token?.id) {
+      if (token) {
         session.user.id = token.id;
+        session.user.name = token.name;
+        session.user.email = token.email;
+        session.user.image = token.image;
+        session.user.photoURL = token.photoURL; // Add this
       }
       return session;
     },
+  },
+
+  session: {
+    strategy: "jwt",
   },
 
   secret: process.env.NEXTAUTH_SECRET,

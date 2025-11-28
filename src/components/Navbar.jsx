@@ -80,7 +80,7 @@ export const Navbar = () => {
     { label: "ফসল", href: "/crops", icon: Wheat },
     { label: "আবহাওয়া", href: "/weather", icon: Cloud },
     { label: "ঝুঁকি", href: "/risk", icon: AlertTriangle },
-    { label: "স্ক্যান", href: "/scan", icon: ScanLine },
+    { label: "স্ক্যান", href: "/scanner", icon: ScanLine },
   ];
 
   return (

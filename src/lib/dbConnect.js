@@ -1,7 +1,7 @@
 // /lib/dbConnect.js
 import { MongoClient, ServerApiVersion } from "mongodb";
 
-const uri = process.env.MongoDB_URI;
+const uri = process.env.MONGODB_URI;
 const dbName = process.env.MONGODB_DB;
 
 if (!uri) {

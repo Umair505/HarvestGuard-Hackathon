@@ -1,4 +1,5 @@
-// /lib/authOptions.js
+
+
 import CredentialsProvider from "next-auth/providers/credentials";
 import GoogleProvider from "next-auth/providers/google";
 import connectToDatabase, { collectionNamesObj } from "@/lib/dbConnect";
@@ -28,7 +29,7 @@ export const authOptions = {
           name: user.name || user.email,
           email: user.email,
           image: user.image || null,
-          photoURL: user.image || null, // Add this for consistency
+          photoURL: user.image || null,
         };
       },
     }),
@@ -37,9 +38,7 @@ export const authOptions = {
       clientId: process.env.GOOGLE_CLIENT_ID || "",
       clientSecret: process.env.GOOGLE_CLIENT_SECRET || "",
       authorization: {
-        params: {
-          prompt: "select_account", // Force account selection
-        },
+        params: { prompt: "select_account" },
       },
     }),
   ],
@@ -50,7 +49,7 @@ export const authOptions = {
 
   callbacks: {
     async signIn({ user, account, profile }) {
-      if (account?.provider && account.provider !== "credentials") {
+      if (account?.provider !== "credentials") {
         try {
           const userCollection = connectToDatabase(collectionNamesObj.userCollection);
           const providerAccountId = account.providerAccountId || profile.sub || profile.id;
@@ -59,15 +58,14 @@ export const authOptions = {
           const existing = await userCollection.findOne({ providerAccountId, provider });
 
           if (!existing) {
-            const payload = {
+            await userCollection.insertOne({
               providerAccountId,
               provider,
               email: user.email,
               image: user.image || profile.picture || null,
               name: user.name || profile.name || user.email,
               createdAt: new Date(),
-            };
-            await userCollection.insertOne(payload);
+            });
           }
         } catch (err) {
           console.error("Error saving OAuth user:", err);
@@ -82,7 +80,7 @@ export const authOptions = {
         token.name = user.name;
         token.email = user.email;
         token.image = user.image;
-        token.photoURL = user.image; // Add this
+        token.photoURL = user.image;
       }
       return token;
     },
@@ -93,15 +91,13 @@ export const authOptions = {
         session.user.name = token.name;
         session.user.email = token.email;
         session.user.image = token.image;
-        session.user.photoURL = token.photoURL; // Add this
+        session.user.photoURL = token.photoURL;
       }
       return session;
     },
   },
 
-  session: {
-    strategy: "jwt",
-  },
+  session: { strategy: "jwt" },
 
   secret: process.env.NEXTAUTH_SECRET,
 };

@@ -78,7 +78,7 @@ export const Navbar = () => {
 
   const navItems = [
     { label: "হোম", href: "/", icon: Home },
-    { label: "ফসল", href: "/crops", icon: Wheat },
+    // { label: "ফসল", href: "/crops", icon: Wheat },
     { label: "আবহাওয়া", href: "/weather", icon: Cloud },
     { label: "ঝুঁকি", href: "/risk-dashboard", icon: AlertTriangle },
     { label: "স্ক্যান", href: "/scanner", icon: ScanLine },

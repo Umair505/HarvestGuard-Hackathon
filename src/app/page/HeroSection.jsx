@@ -171,7 +171,7 @@ export default function HeroSection() {
                               <h3 className="text-2xl font-bold font-serif">
                                 {slide.title}
                               </h3>
-                              <p className="text-slate-200 text-sm opacity-0 group-hover:opacity-100 transition-opacity duration-500 delay-200">
+                              <p className="text-slate-200 text-sm ">
                                 {slide.desc}
                               </p>
                             </div>

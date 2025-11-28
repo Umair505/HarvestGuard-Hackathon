@@ -1,47 +1,66 @@
+// /app/login/page.jsx
 "use client";
 
 import React, { useState } from "react";
 import Link from "next/link";
-import { 
-  Mail, 
-  Lock, 
-  ArrowRight, 
-  Sprout, 
-  LogIn 
-} from "lucide-react";
+import Image from "next/image";
+import { useRouter } from "next/navigation";
+import { signIn } from "next-auth/react";
+import { Mail, Lock, ArrowRight, LogIn } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { toast } from "sonner";
 
 export default function Login() {
-  const [formData, setFormData] = useState({
-    email: "",
-    password: "",
-  });
+  const router = useRouter();
+  const [formData, setFormData] = useState({ email: "", password: "" });
+  const [loading, setLoading] = useState(false);
 
-  const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+  const handleChange = (e) => setFormData({ ...formData, [e.target.name]: e.target.value });
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+
+    const res = await signIn("credentials", {
+      redirect: false,
+      email: formData.email,
+      password: formData.password,
+    });
+
+    setLoading(false);
+
+    if (res?.ok) {
+      toast.success("Login successful! Redirecting...");
+      router.push("/");
+    } else {
+      toast.error(res?.error || "Login failed. Please check your credentials.");
+    }
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    console.log("Login Data:", formData);
-    // লগিন লজিক এখানে হবে
+  const handleGoogle = async () => {
+    try {
+      await signIn("google", {
+        prompt: "select_account",
+        callbackUrl: "/"
+      });
+    } catch (error) {
+      toast.error("Google sign-in failed. Please try again.");
+    }
   };
 
   return (
     <div className="min-h-screen w-full lg:grid lg:grid-cols-2 font-sans bg-white">
-      
       <div className="lg:flex relative h-full flex-col bg-slate-900 text-white">
         <div className="absolute inset-0">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
+          <Image
             src="/images/c3.png"
             alt="Bangladeshi Village Morning"
-            className="h-full w-full object-cover opacity-60"
+            fill
+            className="object-cover opacity-60"
+            priority
           />
           <div className="absolute inset-0 bg-gradient-to-b from-emerald-900/80 via-transparent to-emerald-900/90" />
         </div>
-
-
 
         <div className="relative z-20 mt-auto p-12">
           <h2 className="text-4xl font-bold font-serif mb-4 leading-tight">
@@ -55,20 +74,17 @@ export default function Login() {
 
       <div className="flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 bg-white">
         <div className="w-full max-w-md space-y-8">
-
           <div className="text-center">
             <h2 className="text-3xl font-bold tracking-tight text-slate-900 font-serif">
               অ্যাকাউন্টে প্রবেশ করুন
             </h2>
             <p className="mt-2 text-sm text-slate-600">
-              আপনার ইমেইল এবং পাসওয়ার্ড দিয়ে লগিন করুন
+              আপনার ইমেইল এবং পাসওয়ার্ড দিয়ে লগিন করুন
             </p>
           </div>
 
           <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
             <div className="space-y-4">
-              
-              {/* ইমেইল */}
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                   <Mail className="h-5 w-5 text-slate-400" />
@@ -80,11 +96,11 @@ export default function Login() {
                   required
                   className="block w-full pl-10 pr-3 py-3 border border-slate-200 rounded-lg text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all"
                   placeholder="ইমেইল অ্যাড্রেস"
+                  value={formData.email}
                   onChange={handleChange}
                 />
               </div>
 
-              {/* পাসওয়ার্ড */}
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                   <Lock className="h-5 w-5 text-slate-400" />
@@ -96,11 +112,11 @@ export default function Login() {
                   required
                   className="block w-full pl-10 pr-3 py-3 border border-slate-200 rounded-lg text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all"
                   placeholder="পাসওয়ার্ড"
+                  value={formData.password}
                   onChange={handleChange}
                 />
               </div>
-              
-              {/* ফরগট পাসওয়ার্ড লিংক */}
+
               <div className="flex items-center justify-end">
                 <Link href="#" className="text-sm font-medium text-emerald-600 hover:text-emerald-500">
                   পাসওয়ার্ড ভুলে গেছেন?
@@ -108,15 +124,26 @@ export default function Login() {
               </div>
             </div>
 
-            {/* লগিন বাটন */}
             <Button 
               type="submit"
+              disabled={loading}
               className="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-6 rounded-lg shadow-lg shadow-emerald-200 hover:shadow-emerald-300 transition-all text-lg"
             >
-              লগিন করুন <LogIn className="ml-2 h-5 w-5" />
+              {loading ? "লগিন..." : "লগিন করুন"} <LogIn className="ml-2 h-5 w-5" />
             </Button>
 
-            {/* রেজিস্ট্রেশন লিংক */}
+            <div className="my-4 flex items-center gap-2">
+              <div className="flex-grow border-t border-slate-200" />
+              <button
+                type="button"
+                onClick={handleGoogle}
+                className="ml-2 px-4 py-2 border rounded-lg hover:bg-slate-50"
+              >
+                Continue with Google
+              </button>
+              <div className="flex-grow border-t border-slate-200" />
+            </div>
+
             <div className="text-center pt-4 border-t border-slate-100">
               <p className="text-sm text-slate-600">
                 কোনো অ্যাকাউন্ট নেই?{' '}

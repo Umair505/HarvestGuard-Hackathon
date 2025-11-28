@@ -4,6 +4,8 @@ import { Navbar } from "@/components/Navbar";
 import { ToastContainer } from "react-toastify";
 import { Hind_Siliguri, Tiro_Bangla } from 'next/font/google'
 import Footer from "@/components/Footer";
+import NextAuthProvider from "./Providers/NextAuthProvider";
+import { Toaster } from "sonner";
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -38,13 +40,17 @@ export default function RootLayout({ children }) {
       <body
         className={`${hindSiliguri.variable} ${tiroBangla.variable} ${geistSans.variable} ${geistMono.variable} antialiased`}
       >
+         <NextAuthProvider>
+         
         <Navbar />
 
         <ToastContainer />
+        <Toaster position="top-right" richColors />
         <div className="min-h-screen flex flex-col">
           {children}
         </div>
         <Footer />
+        </NextAuthProvider>
       </body>
     </html>
   );

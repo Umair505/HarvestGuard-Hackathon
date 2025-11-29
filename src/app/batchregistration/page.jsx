@@ -27,13 +27,15 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { toast  } from "sonner";
+import { toast } from "sonner";
+import { useSession } from "next-auth/react";
 
 export default function RegistrationPage() {
   const [activeTab, setActiveTab] = useState("register");
   const [isOnline, setIsOnline] = useState(true);
   const [syncStatus, setSyncStatus] = useState("synced");
   const [isLoading, setIsLoading] = useState(false);
+  const [userInfo, setUserInfo] = useState(null);
 
   // ফর্ম স্টেট
   const [formData, setFormData] = useState({
@@ -78,6 +80,7 @@ export default function RegistrationPage() {
     { id: 4, name: "গুণমান রক্ষক", badge: "⭐", description: "৯৫%以上 গুণমান রেটিং অর্জন করুন", earned: false },
     { id: 5, name: "মৌসুমি বিশেষজ্ঞ", badge: "🌦️", description: "৪টি ভিন্ন মৌসুমে ফসল রেজিস্ট্রেশন করুন", earned: false }
   ];
+   const { data: session, status } = useSession();
 
   // নেটওয়ার্ক স্ট্যাটাস চেক
   useEffect(() => {
@@ -96,11 +99,115 @@ export default function RegistrationPage() {
     };
   }, []);
 
-  // লোকাল স্টোরেজ থেকে ডাটা লোড
+  // ইউজার ইনফো এবং ডাটা লোড
   useEffect(() => {
+    loadUserInfo();
     loadFromLocalStorage();
     loadBatchesFromDB();
   }, []);
+
+  // ইউজার ইনফো লোড - IMPROVED VERSION
+    const loadUserInfo = async () => {
+      try {
+        // Multiple ways to get user info - try all of them
+        const userId = localStorage.getItem('currentUserId');
+        const userEmail = localStorage.getItem('currentUserEmail');
+        const userToken = localStorage.getItem('userToken');
+        
+        console.log('Loading user info:', { userId, userEmail, userToken });
+
+        // Try different approaches to get user data
+        let userData = null;
+
+        // Approach 1: If we have user ID
+        if (userId) {
+          try {
+            const response = await fetch(`/api/users?id=${userId}`);
+            if (response.ok) {
+              const result = await response.json();
+              if (result.success) {
+                userData = result.data;
+                console.log('User data loaded by ID:', userData);
+              }
+            }
+          } catch (error) {
+            console.error('Error loading user by ID:', error);
+          }
+        }
+
+        // Approach 2: If we have email but no user data yet
+        if (!userData && userEmail) {
+          try {
+            const response = await fetch(`/api/users?email=${userEmail}`);
+            if (response.ok) {
+              const result = await response.json();
+              if (result.success) {
+                userData = result.data;
+                console.log('User data loaded by email:', userData);
+              }
+            }
+          } catch (error) {
+            console.error('Error loading user by email:', error);
+          }
+        }
+
+        // Approach 3: Check if user data is stored in localStorage
+        if (!userData) {
+          const storedUser = localStorage.getItem('currentUser');
+          if (storedUser) {
+            try {
+              userData = JSON.parse(storedUser);
+              console.log('User data loaded from localStorage:', userData);
+            } catch (parseError) {
+              console.error('Error parsing stored user:', parseError);
+            }
+          }
+        }
+
+        // Approach 4: Fallback - create demo user for testing
+        if (!userData) {
+          userData = {
+            _id: "demo-user-id",
+            name: "ডেমো কৃষক",
+            email: "demo@farmer.com", 
+            phone: "০১৭০০০০০০০",
+            language: "bn"
+          };
+          console.log('Using demo user data');
+          
+          // Save demo user to localStorage for future use
+          localStorage.setItem('currentUser', JSON.stringify(userData));
+          localStorage.setItem('currentUserId', userData._id);
+          localStorage.setItem('currentUserEmail', userData.email);
+        }
+
+        setUserInfo(userData);
+
+        // Save user info to localStorage for offline use
+        localStorage.setItem('currentUser', JSON.stringify(userData));
+        if (userData._id) {
+          localStorage.setItem('currentUserId', userData._id);
+        }
+        if (userData.email) {
+          localStorage.setItem('currentUserEmail', userData.email);
+        }
+
+      } catch (error) {
+        console.error('Error loading user info:', error);
+        
+        // Ultimate fallback
+        const fallbackUser = {
+          _id: "fallback-user-id",
+          name: "কৃষক ব্যবহারকারী",
+          email: "farmer@example.com",
+          phone: "০১৭১২৩৪৫৬৭৮",
+          language: "bn"
+        };
+        
+        setUserInfo(fallbackUser);
+        localStorage.setItem('currentUser', JSON.stringify(fallbackUser));
+      }
+    };
 
   const loadFromLocalStorage = () => {
     try {
@@ -114,8 +221,9 @@ export default function RegistrationPage() {
       console.error('Error loading from localStorage:', error);
     }
   };
+  console.log(userInfo)
 
-const loadBatchesFromDB = async () => {
+  const loadBatchesFromDB = async () => {
     try {
       const response = await fetch('/api/batches');
       if (response.ok) {
@@ -158,7 +266,7 @@ const loadBatchesFromDB = async () => {
         localStorage.removeItem('pendingBatches');
         setSyncStatus('synced');
         
-        toast(`${pendingBatches.length}টি ব্যাচ সফলভাবে সিঙ্ক হয়েছে`);
+        toast.success(`${pendingBatches.length}টি ব্যাচ সফলভাবে সিঙ্ক হয়েছে`);
       }
     } catch (error) {
       console.error('Error syncing pending batches:', error);
@@ -208,6 +316,11 @@ const loadBatchesFromDB = async () => {
     const newBatch = {
       id: Date.now().toString(),
       ...formData,
+      // ইউজার ইনফো যোগ করুন
+      farmerInfo: {
+        name: session?.user?.name || "কৃষক ব্যবহারকারী",
+        email: session?.user?.email || "farmer@example.com",
+      },
       registrationDate: new Date().toISOString(),
       status: "active",
       qualityScore: Math.floor(Math.random() * 20) + 80,
@@ -246,6 +359,8 @@ const loadBatchesFromDB = async () => {
         );
         setAchievements(updatedAchievements);
         saveToLocalStorage(updatedBatches, updatedAchievements);
+        
+        toast.success("🎉 প্রথম ফসল রেজিস্ট্রেশন অ্যাচিভমেন্ট অর্জিত!");
       }
 
       // ফর্ম রিসেট
@@ -258,21 +373,24 @@ const loadBatchesFromDB = async () => {
         storageType: ""
       });
 
-      toast.success(isOnline 
-        ? "ফসল ব্যাচ ডাটাবেসে সেভ হয়েছে" 
-        : "ফসল ব্যাচ অফলাইন সেভ হয়েছে। অনলাইন হলে অটো সিঙ্ক হবে।");
+      if (isOnline) {
+        toast.success("ফসল ব্যাচ ডাটাবেসে সেভ হয়েছে");
+      } else {
+        toast.success("ফসল ব্যাচ অফলাইন সেভ হয়েছে। অনলাইন হলে অটো সিঙ্ক হবে।");
+      }
 
     } catch (error) {
       console.error('Error registering batch:', error);
-      toast.error("ব্যাচ রেজিস্ট্রেশন失败. আবার চেষ্টা করুন");
+      toast.error("ব্যাচ রেজিস্ট্রেশন. আবার চেষ্টা করুন");
     } finally {
       setIsLoading(false);
     }
   };
-
+ console.log(session?.user?.email)
   // ডাটা এক্সপোর্ট
   const exportData = (format) => {
     const dataToExport = {
+      farmer: userInfo,
       batches: batches,
       achievements: achievements.filter(a => a.earned),
       exportDate: new Date().toISOString()
@@ -287,10 +405,10 @@ const loadBatchesFromDB = async () => {
       link.download = `farmer-data-${new Date().getTime()}.json`;
       link.click();
     } else if (format === 'csv') {
-      let csvContent = "ID,Crop Type,Weight,Harvest Date,Division,District,Storage Type,Status,Quality Score,Risk Level\n";
+      let csvContent = "ID,Crop Type,Weight,Harvest Date,Division,District,Storage Type,Status,Quality Score,Risk Level,Farmer Name,Farmer Email,Farmer Phone\n";
       
       batches.forEach(batch => {
-        csvContent += `"${batch.id}","${batch.cropType}","${batch.estimatedWeight}","${batch.harvestDate}","${batch.division}","${batch.district}","${batch.storageType}","${batch.status}","${batch.qualityScore}","${batch.riskLevel}"\n`;
+        csvContent += `"${batch.id}","${batch.cropType}","${batch.estimatedWeight}","${batch.harvestDate}","${batch.division}","${batch.district}","${batch.storageType}","${batch.status}","${batch.qualityScore}","${batch.riskLevel}","${batch.farmerInfo?.name || ''}","${batch.farmerInfo?.email || ''}","${batch.farmerInfo?.phone || ''}"\n`;
       });
       
       const blob = new Blob([csvContent], { type: 'text/csv' });
@@ -323,6 +441,7 @@ const loadBatchesFromDB = async () => {
       toast.error("ডাটা সিঙ্ক করতে সমস্যা হয়েছে।");
     }
   };
+
   // স্ট্যাটাস ক্যালকুলেশন
   const getStats = () => {
     const activeBatches = batches.filter(b => b.status === "active").length;
@@ -342,13 +461,22 @@ const loadBatchesFromDB = async () => {
         
         {/* হেডার */}
         <div className="text-center mt-14">
-          
+          <div className="inline-flex items-center justify-center w-16 h-16 bg-white rounded-full shadow-lg mb-4">
+            <User className="w-8 h-8 text-green-600" />
+          </div>
           <h1 className="text-4xl font-bold font-tiro-bangla text-gray-900 mb-3">
             ফসল ব্যাচ রেজিস্ট্রেশন
           </h1>
           <p className="text-gray-600 text-lg">
             আপনার ফসলের ব্যাচ রেজিস্ট্রেশন করুন এবং ডিজিটালভাবে ট্র্যাক করুন
           </p>
+          {userInfo && (
+            <div className="mt-4 inline-flex items-center gap-4 bg-white/80 px-4 py-2 rounded-full border">
+              <span className="text-sm text-gray-600">কৃষক:</span>
+              <span className="font-semibold text-green-700">{userInfo.name}</span>
+              <span className="text-xs text-gray-500">{userInfo.phone}</span>
+            </div>
+          )}
         </div>
 
         {/* নেটওয়ার্ক স্ট্যাটাস */}
@@ -550,6 +678,27 @@ const loadBatchesFromDB = async () => {
 
               </div>
 
+              {/* কৃষক তথ্য */}
+              {userInfo && (
+                <div className="mt-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                  <h4 className="font-semibold text-blue-800 mb-2">কৃষক তথ্য</h4>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+                    <div>
+                      <span className="font-medium text-gray-700">নাম:</span>
+                      <span className="ml-2 text-gray-900">{session?.user?.name}</span>
+                    </div>
+                    <div>
+                      <span className="font-medium text-gray-700">ইমেইল:</span>
+                      <span className="ml-2 text-gray-900">{session?.user?.email}</span>
+                    </div>
+                    <div>
+                      <span className="font-medium text-gray-700">ফোন:</span>
+                      <span className="ml-2 text-gray-900">{userInfo.phone}</span>
+                    </div>
+                  </div>
+                </div>
+              )}
+
               {/* সাবমিট বাটন */}
               <div className="mt-8 flex justify-center">
                 <Button 
@@ -685,6 +834,14 @@ const loadBatchesFromDB = async () => {
                             <div className="mt-2">
                               <span className="font-semibold text-sm">সংরক্ষণ:</span>
                               <span className="text-sm text-gray-600 ml-2">{batch.storageType}</span>
+                            </div>
+                            
+                            {/* কৃষক তথ্য */}
+                            <div className="mt-2 text-xs text-gray-500">
+                              <span>কৃষক: {batch.farmerInfo?.name}</span>
+                              {batch.farmerInfo?.phone && (
+                                <span className="ml-3">ফোন: {batch.farmerInfo.phone}</span>
+                              )}
                             </div>
                           </div>
                           

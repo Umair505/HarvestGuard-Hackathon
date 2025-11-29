@@ -13,6 +13,8 @@ import {
   X,
   LogOut,
   UserCircle,
+  MapPin,
+  Bell,
 } from "lucide-react";
 import Image from "next/image";
 import { useSession, signOut } from "next-auth/react";
@@ -81,7 +83,9 @@ export const Navbar = () => {
     // { label: "ফসল", href: "/crops", icon: Wheat },
     { label: "আবহাওয়া", href: "/weather", icon: Cloud },
     { label: "ঝুঁকি", href: "/risk-dashboard", icon: AlertTriangle },
+    { label: "ঝুঁকি মানচিত্র", href: "/risk-map", icon: MapPin },
     { label: "স্ক্যান", href: "/scanner", icon: ScanLine },
+    { label: "স্মার্ট অ্যালার্ট", href: "/smart-alert", icon: Bell },
   ];
 
   return (

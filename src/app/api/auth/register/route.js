@@ -41,3 +41,61 @@ export async function POST(request) {
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
 }
+
+
+export async function GET(request) {
+  try {
+    // 1. Extract query parameters from the URL
+    const { searchParams } = new URL(request.url);
+    const id = searchParams.get('id');
+    const email = searchParams.get('email');
+
+    // 2. Validate that we have something to search with
+    if (!id && !email) {
+      return NextResponse.json(
+        { error: "User ID or Email is required" }, 
+        { status: 400 }
+      );
+    }
+
+    // 3. Connect to the database
+    const userCollection = connectToDatabase(collectionNamesObj.userCollection);
+    let query = {};
+
+    // 4. Build the query object
+    if (id) {
+      // Validate ObjectId format
+      if (!ObjectId.isValid(id)) {
+        return NextResponse.json({ error: "Invalid User ID format" }, { status: 400 });
+      }
+      query = { _id: new ObjectId(id) };
+    } else if (email) {
+      query = { email: email };
+    }
+
+    // 5. Find the user
+    const user = await userCollection.findOne(query);
+
+    if (!user) {
+      return NextResponse.json({ 
+        success: false,
+        error: "User not found" 
+      }, { status: 404 });
+    }
+
+    // 6. Remove sensitive data (Password) before returning
+    const { password, ...userWithoutPassword } = user;
+
+    return NextResponse.json({
+      success: true,
+      data: userWithoutPassword
+    }, { status: 200 });
+
+  } catch (err) {
+    console.error("Fetch user error:", err);
+    return NextResponse.json({ 
+      success: false,
+      error: "Internal server error" 
+    }, { status: 500 });
+  }
+}

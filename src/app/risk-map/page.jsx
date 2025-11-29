@@ -55,9 +55,9 @@ export default function RiskMapPage() {
               কমিউনিটি সতর্কবার্তা
             </motion.div>
 
-            <h1 className="text-4xl md:text-5xl font-bold font-tiro-bangla text-slate-900 leading-tight">
+            <h1 className="text-4xl md:text-5xl pt-4 font-bold font-hind text-slate-900 leading-tight">
               আঞ্চলিক{" "}
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-red-600 to-amber-600">
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-red-600 to-amber-600 pt">
                 ঝুঁকি মানচিত্র
               </span>
             </h1>

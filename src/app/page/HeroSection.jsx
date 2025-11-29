@@ -126,6 +126,7 @@ export default function HeroSection() {
                     রেজিস্ট্রেশন করুন <ArrowRight className="ml-2 h-5 w-5" />
                   </Button>
                 )}
+               <Link href="/about">
                 <Button
                   size="lg"
                   variant="outline"
@@ -133,6 +134,7 @@ export default function HeroSection() {
                 >
                   আমাদের সম্পর্কে জানুন
                 </Button>
+               </Link>
               </div>
 
               {/* Feature Icons */}

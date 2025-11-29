@@ -119,7 +119,7 @@ export default function RiskMapPage() {
                   বর্তমান এলাকা
                 </p>
                 <p className="text-sm font-bold text-slate-800">
-                  চট্টগ্রাম (২নং গেইট এলাকা)
+                  চট্টগ্রাম (ইস্ট ডেল্টা ইউনিভার্সিটি এলাকা)
                 </p>
               </div>
             </div>

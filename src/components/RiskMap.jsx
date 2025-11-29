@@ -46,12 +46,9 @@ const icons = {
   high: createIcon("#ef4444"),       // Red
 };
 
-// --- ২. মক ডাটা জেনারেটর (চট্টগ্রাম বেসড) ---
-// ২নং গেইট, অক্সিজেন, বায়েজিদ, খুলশী এলাকা টার্গেট করা হয়েছে
 const generateMockNeighbors = (centerLat, centerLng) => {
   const neighbors = [];
   
-  // কিছু নির্দিষ্ট পয়েন্ট (Landmarks)
   const landmarks = [
     { name: "অক্সিজেন মোড় এলাকা", lat: 22.3925, lng: 91.8155 },
     { name: "ইস্ট ডেল্টা ইউনিভার্সিটি (EDU)", lat: 22.3785, lng: 91.8037 },
@@ -99,7 +96,6 @@ const generateMockNeighbors = (centerLat, centerLng) => {
 };
 
 export default function RiskMap() {
-  // চট্টগ্রাম ২নং গেইট (ষোলশহর) কোঅর্ডিনেট
   const userLocation = { lat: 22.3685, lng: 91.8236 }; 
   const [neighbors, setNeighbors] = useState([]);
 
@@ -126,7 +122,7 @@ export default function RiskMap() {
           <Popup>
             <div className="font-sans text-center p-1">
               <h3 className="font-bold text-blue-600 text-base">আপনার খামার</h3>
-              <p className="text-xs text-slate-500">২নং গেইট, চট্টগ্রাম</p>
+              <p className="text-xs text-slate-500">ইস্ট ডেল্টা ইউনিভার্সিটি, চট্টগ্রাম</p>
               <div className="mt-1 px-2 py-0.5 bg-blue-100 text-blue-700 text-[10px] rounded-full inline-block">
                 নিরাপদ জোন
               </div>

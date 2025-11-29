@@ -1,10 +1,22 @@
 import { NextResponse } from "next/server";
 import connectToDatabase from "@/lib/dbConnect";
 
-export async function GET() {
+export async function GET(request) {
   try {
+    // ১. URL থেকে ইমেইল প্যারামিটার নেওয়া
+    const { searchParams } = new URL(request.url);
+    const email = searchParams.get('email');
+
     const batchesCollection = connectToDatabase("batches");
-    const batches = await batchesCollection.find({}).toArray();
+    
+    let query = {};
+
+
+    if (email) {
+      query = { "farmerInfo.email": email };
+    }
+
+    const batches = await batchesCollection.find(query).toArray();
     
     return NextResponse.json(batches);
   } catch (error) {

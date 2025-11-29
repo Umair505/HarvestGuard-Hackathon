@@ -74,10 +74,9 @@ export default function RegistrationPage() {
 
   // অ্যাচিভমেন্ট সিস্টেম
   const allAchievements = [
-    { id: 1, name: "প্রথম ফসল রেজিস্ট্রেশন", badge: "🌱", description: "প্রথমবারের মতো ফসল রেজিস্ট্রেশন করুন", earned: false },
     { id: 2, name: "ঝুঁকি ব্যবস্থাপনা বিশেষজ্ঞ", badge: "🛡️", description: "৫টি ঝুঁকি সফলভাবে মোকাবেলা করুন", earned: false },
     { id: 3, name: "ফসল রক্ষাকর্তা", badge: "👨‍🌾", description: "১০টি ব্যাচ রেজিস্ট্রেশন করুন", earned: false },
-    { id: 4, name: "গুণমান রক্ষক", badge: "⭐", description: "৯৫%以上 গুণমান রেটিং অর্জন করুন", earned: false },
+    { id: 4, name: "গুণমান রক্ষক", badge: "⭐", description: "৯৫% বা তার বেশি গুণমান রেটিং অর্জন করুন", earned: false },
     { id: 5, name: "মৌসুমি বিশেষজ্ঞ", badge: "🌦️", description: "৪টি ভিন্ন মৌসুমে ফসল রেজিস্ট্রেশন করুন", earned: false }
   ];
    const { data: session, status } = useSession();
@@ -168,9 +167,8 @@ export default function RegistrationPage() {
         if (!userData) {
           userData = {
             _id: "demo-user-id",
-            name: "ডেমো কৃষক",
+            name:  "গ্রাহক",
             email: "demo@farmer.com", 
-            phone: "০১৭০০০০০০০",
             language: "bn"
           };
           console.log('Using demo user data');
@@ -223,23 +221,34 @@ export default function RegistrationPage() {
   };
   console.log(userInfo)
 
-  const loadBatchesFromDB = async () => {
+ const loadBatchesFromDB = async () => {
     try {
-      const response = await fetch('/api/batches');
+      // ১. সেশন থেকে ইমেইল নেওয়া (নিশ্চিত করুন useSession হুক আছে)
+      const userEmail = session?.user?.email;
+
+      // যদি ইমেইল না থাকে, তবে কল করার দরকার নেই (বা সব ডাটা আনবে না)
+      let url = '/api/batches';
+      if (userEmail) {
+        url = `/api/batches?email=${userEmail}`;
+      }
+
+      // ২. আপডেট করা URL দিয়ে ফেচ করা
+      const response = await fetch(url);
+      
       if (response.ok) {
         const data = await response.json();
         setBatches(data);
       }
     } catch (error) {
       console.error('Error loading batches from DB:', error);
-      // Fallback to localStorage if DB fails
+      
+      // Fallback
       const savedBatches = localStorage.getItem('farmerBatches');
       if (savedBatches) {
         setBatches(JSON.parse(savedBatches));
       }
     }
-  };
-
+};
   // লোকাল স্টোরেজে সেভ করুন
   const saveToLocalStorage = (newBatches, newAchievements) => {
     try {
@@ -473,8 +482,7 @@ export default function RegistrationPage() {
           {userInfo && (
             <div className="mt-4 inline-flex items-center gap-4 bg-white/80 px-4 py-2 rounded-full border">
               <span className="text-sm text-gray-600">কৃষক:</span>
-              <span className="font-semibold text-green-700">{userInfo.name}</span>
-              <span className="text-xs text-gray-500">{userInfo.phone}</span>
+              <span className="font-semibold text-green-700">{session?.user?.name}</span>
             </div>
           )}
         </div>
@@ -626,7 +634,7 @@ export default function RegistrationPage() {
                     </SelectContent>
                   </Select>
                 </div>
-
+  
                 {/* ডিস্ট্রিক্ট */}
                 <div className="space-y-3">
                   <Label htmlFor="district" className="text-sm font-semibold text-gray-700">
@@ -691,10 +699,7 @@ export default function RegistrationPage() {
                       <span className="font-medium text-gray-700">ইমেইল:</span>
                       <span className="ml-2 text-gray-900">{session?.user?.email}</span>
                     </div>
-                    <div>
-                      <span className="font-medium text-gray-700">ফোন:</span>
-                      <span className="ml-2 text-gray-900">{userInfo.phone}</span>
-                    </div>
+                    
                   </div>
                 </div>
               )}

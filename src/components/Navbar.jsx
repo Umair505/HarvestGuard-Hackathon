@@ -15,6 +15,7 @@ import {
   UserCircle,
   MapPin,
   Bell,
+  Bug,
 } from "lucide-react";
 import Image from "next/image";
 import { useSession, signOut } from "next-auth/react";
@@ -86,6 +87,8 @@ export const Navbar = () => {
     { label: "ঝুঁকি মানচিত্র", href: "/risk-map", icon: MapPin },
     { label: "স্ক্যান", href: "/scanner", icon: ScanLine },
     { label: "স্মার্ট অ্যালার্ট", href: "/smart-alert", icon: Bell },
+    { label: "রোগ শনাক্তকরণ", href: "/pest-detect", icon: Bug },
+
   ];
 
   return (
@@ -184,14 +187,6 @@ export const Navbar = () => {
                         </p>
                       </div>
                       
-                      <a
-                        href="/profile"
-                        className="flex items-center space-x-2 px-4 py-2 text-sm text-gray-700 hover:bg-emerald-50 transition-colors"
-                        onClick={() => setIsDropdownOpen(false)}
-                      >
-                        <UserCircle className="h-4 w-4 text-emerald-600" />
-                        <span>প্রোফাইল</span>
-                      </a>
                       
                       <button
                         onClick={handleLogout}
@@ -256,7 +251,7 @@ export const Navbar = () => {
           {/* Crop Batch Registration Mobile — Only if logged in */}
           {isLoggedIn && (
             <a
-              href="/batch-registration"
+              href="/batchregistration"
               className="flex items-center justify-center px-4 py-3 bg-emerald-600 text-white rounded-lg shadow-md"
             >
               ফসল ব্যাচ নিবন্ধন

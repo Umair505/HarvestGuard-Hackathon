@@ -213,7 +213,7 @@ export default function ProblemSection() {
                     <h4 className="text-2xl font-bold font-tiro-bangla mb-3 leading-tight">
                       {stat.title}
                     </h4>
-                    <p className="text-white/90 leading-relaxed text-sm mb-6 opacity-0 group-hover:opacity-100 transform translate-y-4 group-hover:translate-y-0 transition-all duration-500">
+                    <p className="text-white/90 leading-relaxed text-sm mb-6  transform translate-y-4 group-hover:translate-y-0 transition-all duration-500">
                       {stat.description}
                     </p>
                   </motion.div>
@@ -243,8 +243,7 @@ export default function ProblemSection() {
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
             >
-              সমাধান জানুন
-              <ArrowRight className="inline w-5 h-5 ml-2" />
+              খাদ্য অপচয় নিয়ন্ত্রণ করি
             </motion.button>
           </div>
         </motion.div>

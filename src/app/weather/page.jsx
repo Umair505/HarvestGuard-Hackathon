@@ -44,7 +44,7 @@ const getAdvisory = (temp, rainChance, humidity) => {
 };
 
 export default function WeatherPage() {
-  const [location, setLocation] = useState("Gazipur"); 
+  const [location, setLocation] = useState("Chittagong"); 
   const [weather, setWeather] = useState(null);
   const [forecast, setForecast] = useState([]);
   const [loading, setLoading] = useState(false);

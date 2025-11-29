@@ -23,5 +23,10 @@ export const config = {
   matcher: [
     "/login",
     "/register",
+    "/weather",
+    "/risk-dashboard",
+    "/scanner",
+    "/batchregistration",
+    
   ],
 };

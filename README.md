@@ -4,7 +4,7 @@ A Tech-Based Solution to Reduce Food Loss in Bangladesh.
 
 HarvestGuard (locally known as Golaghor) is a smart agricultural platform designed to empower farmers with data-driven insights, weather forecasts, and AI-powered crop health analysis. Our mission aligns with SDG 12.3 to halve global food waste by providing farmers with the tools they need to secure their harvest.
 
-🌐 Live Demo: https://harvest-guard-three.vercel.app/
+🌐 Live Demo: https://golaghor.vercel.app/
 
 🚀 Key Features
 
